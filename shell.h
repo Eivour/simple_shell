@@ -9,5 +9,6 @@
 
 void vour_print(const char *format, ...);
 void show_prompt(void);
+void make_things_happen(const char *format);
 
 #endif
