@@ -8,67 +8,66 @@
  */
 int main(int argcount, char **argvalue)
 {
-    char *message = "(fj_shell#) ";
-    char *lineprinter = NULL;
-    size_t count = 0;
-    ssize_t numstr;
-    const char *delimiter = " \n";
-    char **tokens = NULL;
-    char *tokenizer;
-    int token_count = 0;
-    int i;
+	char *message = "(fj_shell#) ";
+	char *lineprinter = NULL;
+	size_t count = 0;
+	ssize_t numstr;
+	const char *delimiter = " \n";
+	char **tokens = NULL;
+	char *tokenizer;
+	int token_count = 0;
+	int i;
 
-    (void)argcount;
-    (void)argvalue;
+	(void)argcount;
+	(void)argvalue;
 
-    while (1)
-    {
-        vour_print("%s", message);
-        numstr = getline(&lineprinter, &count, stdin);
+	while (true)
+	{
+		vour_print("%s", message);
+		numstr = getline(&lineprinter, &count, stdin);
 
-        if (numstr == -1)
-        {
-            vour_print("Error found, matey! Bye!\n");
-            free(lineprinter);
-            return -1;
-        }
+		if (numstr == -1)
+		{
+			vour_print("Error found, matey! Bye!\n");
+			free(lineprinter);
+			return (-1);
+		}
 
-        vour_print("%s\n", lineprinter);
+		vour_print("%s\n", lineprinter);
 
-        tokenizer = strtok(lineprinter, delimiter);
-        while (tokenizer != NULL)
-        {
-            token_count++;
-            tokenizer = strtok(NULL, delimiter);
-        }
+		tokenizer = strtok(lineprinter, delimiter);
+		while (tokenizer != NULL)
+		{
+			token_count++;
+			tokenizer = strtok(NULL, delimiter);
+		}
 
-        tokens = (char **)malloc((token_count + 1) * sizeof(char *));
+		tokens = (char **)malloc((token_count + 1) * sizeof(char *));
+		if (tokens == NULL)
+		{
+			perror("malloc error");
+			free(lineprinter);
+			return (-1);
+		}
 
-        if (tokens == NULL)
-        {
-            perror("malloc error");
-            free(lineprinter);
-            return -1;
-        }
+		tokenizer = strtok(lineprinter, delimiter);
+		for (i = 0; tokenizer != NULL; i++)
+		{
+			tokens[i] = strdup(tokenizer);
+			vour_print("%s\n", tokens[i]);
+			tokenizer = strtok(NULL, delimiter);
+		}
 
-        tokenizer = strtok(lineprinter, delimiter);
-        for (i = 0; tokenizer != NULL; i++)
-        {
-            tokens[i] = strdup(tokenizer);
-            vour_print("%s\n", tokens[i]);
-            tokenizer = strtok(NULL, delimiter);
-        }
+		tokens[i] = NULL;
 
-        tokens[i] = NULL;
+		for (i = 0; i < token_count; i++)
+		{
+			free(tokens[i]);
+		}
 
-        for (i = 0; i < token_count; i++)
-        {
-            free(tokens[i]);
-        }
+		free(tokens);
+		token_count = 0;
+	}
 
-        free(tokens);
-        token_count = 0;
-    }
-
-    return 0;
+	return (0);
 }
