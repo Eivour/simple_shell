@@ -11,8 +11,12 @@ int main(int argcount, char **argvalue)
 	char *lineprinter;
 	size_t count = 0;
 
+    (void)argcount;
+    (void)argvalue;
+
 	vour_print("%s", message);
 	getline(&lineprinter, &count, stdin);
+    vour_print("%s\n", lineprinter);
 
 	free(lineprinter);
 	return (0);
