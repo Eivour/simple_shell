@@ -9,31 +9,66 @@
 int main(int argcount, char **argvalue)
 {
     char *message = "(fj_shell#) ";
-    char *lineprinter;
+    char *lineprinter = NULL;
     size_t count = 0;
     ssize_t numstr;
-    char **arg_tokens;
+    const char *delimiter = " \n";
+    char **tokens = NULL;
+    char *tokenizer;
+    int token_count = 0;
+    int i;
 
-    (void)argvalue;
     (void)argcount;
+    (void)argvalue;
 
-    while (true)
+    while (1)
     {
         vour_print("%s", message);
-        numstr = get_input(&lineprinter, &count);
+        numstr = getline(&lineprinter, &count, stdin);
 
         if (numstr == -1)
         {
             vour_print("Error found, matey! Bye!\n");
+            free(lineprinter);
             return -1;
         }
 
         vour_print("%s\n", lineprinter);
 
-        arg_tokens = tokenize_input(lineprinter, " \n");
+        tokenizer = strtok(lineprinter, delimiter);
+        while (tokenizer != NULL)
+        {
+            token_count++;
+            tokenizer = strtok(NULL, delimiter);
+        }
 
-        free_tokens(arg_tokens);
-        free(lineprinter);
+        tokens = (char **)malloc((token_count + 1) * sizeof(char *));
+
+        if (tokens == NULL)
+        {
+            perror("malloc error");
+            free(lineprinter);
+            return -1;
+        }
+
+        tokenizer = strtok(lineprinter, delimiter);
+        for (i = 0; tokenizer != NULL; i++)
+        {
+            tokens[i] = strdup(tokenizer);
+            vour_print("%s\n", tokens[i]);
+            tokenizer = strtok(NULL, delimiter);
+        }
+
+        tokens[i] = NULL;
+
+        for (i = 0; i < token_count; i++)
+        {
+            free(tokens[i]);
+        }
+
+        free(tokens);
+        token_count = 0;
     }
+
     return 0;
 }
