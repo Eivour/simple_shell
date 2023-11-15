@@ -18,8 +18,8 @@
 #define MAX_ARGS 64
 
 void vour_print(const char *format, ...);
-void show_prompt(void);
-void make_things_happen(const char *format);
-void vour_print(const char *format, ...);
+ssize_t get_input(char **line, size_t *count);
+char **tokenize_input(char *line, const char *delimiter);
+void free_tokens(char **tokens);
 
 #endif
