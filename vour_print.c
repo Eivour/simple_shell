@@ -8,10 +8,9 @@
 void vour_print(const char *format, ...)
 {
 	va_list args;
+	char buffer[MAX_LINE];
 
 	va_start(args, format);
-
-	char buffer[MAX_LINE];
 
 	vsnprintf(buffer, MAX_LINE, format, args);
 
