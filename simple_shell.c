@@ -11,7 +11,7 @@ int main(int argcount, char **argvalue)
 	char *lineprinter;
 	size_t count = 0;
 
-	printf("%s", message);
+	vour_print("%s", message);
 	getline(&lineprinter, &count, stdin);
 
 	free(lineprinter);
