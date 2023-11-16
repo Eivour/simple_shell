@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stddef.h>
 #include <stdbool.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -14,12 +16,15 @@
 #include <signal.h>
 #include <sys/wait.h>
 
+
 #define MAX_LINE 1024
 #define MAX_ARGS 64
+#define true 1
+#define PATH_MAX_LEN 1024
+
 
 void vour_print(const char *format, ...);
-ssize_t get_input(char **line, size_t *count);
-char **tokenize_input(char *line, const char *delimiter);
-void free_tokens(char **tokens);
+void tokenize_command(char *command, char *args[]);
+void execute_command(char *args[], char *environ[]);
 
 #endif

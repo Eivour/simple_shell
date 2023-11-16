@@ -1,73 +1,59 @@
 #include "shell.h"
 
 /**
- * main - Entry point for the simple shell program
- * @argcount: Number of command-line arguments
- * @argvalue: Array of command-line argument strings
- * Return: 0 on success
+ * execute_shell - Entry point for the vourshell program.
+ *
+ * Return: 0 on success, 1 on failure.
  */
-int main(int argcount, char **argvalue)
-{
-	char *message = "(fj_shell#) ";
-	char *lineprinter = NULL;
-	size_t count = 0;
-	ssize_t numstr;
-	const char *delimiter = " \n";
-	char **tokens = NULL;
-	char *tokenizer;
-	int token_count = 0;
-	int i;
 
-	(void)argcount;
-	(void)argvalue;
+int main() {
+    char *command;
+    char *args[MAX_ARGS];
+    pid_t pid;
 
-	while (true)
-	{
-		vour_print("%s", message);
-		numstr = getline(&lineprinter, &count, stdin);
+    extern char **environ;
 
-		if (numstr == -1)
-		{
-			vour_print("Error found, matey! Bye!\n");
-			free(lineprinter);
-			return (-1);
-		}
+    command = malloc(100);
 
-		vour_print("%s\n", lineprinter);
+    if (command == NULL) {
+        perror("malloc error");
+        exit(EXIT_FAILURE);
+    }
 
-		tokenizer = strtok(lineprinter, delimiter);
-		while (tokenizer != NULL)
-		{
-			token_count++;
-			tokenizer = strtok(NULL, delimiter);
-		}
+    while (1) {
 
-		tokens = (char **)malloc((token_count + 1) * sizeof(char *));
-		if (tokens == NULL)
-		{
-			perror("malloc error");
-			free(lineprinter);
-			return (-1);
-		}
+        vour_print("VOUR$ ");
+        
+        if (fgets(command, 100, stdin) == NULL) {
+            vour_print("catch ya later, matey...\n");
+            free(command);
+            break;
+        }
 
-		tokenizer = strtok(lineprinter, delimiter);
-		for (i = 0; tokenizer != NULL; i++)
-		{
-			tokens[i] = strdup(tokenizer);
-			vour_print("%s\n", tokens[i]);
-			tokenizer = strtok(NULL, delimiter);
-		}
+        command[strcspn(command, "\n")] = '\0';
 
-		tokens[i] = NULL;
+        tokenize_command(command, args);
 
-		for (i = 0; i < token_count; i++)
-		{
-			free(tokens[i]);
-		}
+        if (args[0] == NULL) {
+            perror("Error tokenizing command");
+            continue;
+        }
 
-		free(tokens);
-		token_count = 0;
-	}
+        pid = fork();
 
-	return (0);
+        if (pid == -1) {
+            perror("fork error");
+            break;
+        }
+
+        if (pid == 0) {
+            execute_command(args, environ);
+            exit(EXIT_SUCCESS); 
+        } else {
+            int status;
+            waitpid(pid, &status, 0);
+        }
+    }
+    free(command);
+    return 0;  
 }
