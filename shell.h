@@ -25,6 +25,9 @@
 
 void vour_print(const char *format, ...);
 void tokenize_command(char *command, char *args[]);
-void execute_command(char *args[], char *environ[]);
+void display_prompt(void);
+char *read_user_input(void);
+void execute_command(char *command);
+void handle_error(void);
 
 #endif
