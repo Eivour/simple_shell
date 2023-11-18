@@ -1,25 +1,40 @@
 #include "shell.h"
-
-
 /**
- * tokenize_command - Tokenizes the given command string into an array of arguments.
- *
- * This function takes a command string and breaks it into individual
- * arguments, storing them in the provided array. The strtok function is
- * used to tokenize the command based on space (' ') as the delimiter.
- *
- * @command: The command string to be tokenized.
- * @args: An array to store the tokenized arguments.
+ * tokenize_input - Tokenize the user input into an array of arguments
+ * @input: The user input string
+ * Return: An array of arguments
  */
+char **tokenize_input(char *input)
+{
+    size_t bufsize = 64, position = 0;
+    char **tokens = malloc(bufsize * sizeof(char *));
+    char *token;
 
- 
-void tokenize_command(char *command, char *args[]) {
-    int i = 0;
-    args[i] = strtok(command, " ");
-
-    while (args[i] != NULL && i < MAX_ARGS - 1) {
-        i++;
-        args[i] = strtok(NULL, " ");
+    if (!tokens)
+    {
+        handle_error();
+        exit(EXIT_FAILURE);
     }
-    args[i + 1] = NULL;
+
+    token = strtok(input, " \t\n\r\a");
+    while (token != NULL)
+    {
+        tokens[position] = token;
+        position++;
+
+        if (position >= bufsize)
+        {
+            bufsize += 64;
+            tokens = realloc(tokens, bufsize * sizeof(char *));
+            if (!tokens)
+            {
+                handle_error();
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        token = strtok(NULL, " \t\n\r\a");
+    }
+    tokens[position] = NULL;
+    return tokens;
 }

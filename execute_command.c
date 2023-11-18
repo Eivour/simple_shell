@@ -2,8 +2,10 @@
 /**
  * execute_command - Execute a command using execve
  * @command: The command to be executed
+ * @args: The arguments for the command
  */
-void execute_command(char *command)
+
+void execute_command(char *command, char **args)
 {
     pid_t child_pid;
     int status;
@@ -17,20 +19,8 @@ void execute_command(char *command)
 
     if (child_pid == 0)
     {
-        char **args = malloc(2 * sizeof(char *));
-        if (!args)
-        {
-            handle_error();
-            exit(EXIT_FAILURE);
-        }
-
-        args[0] = command;
-        args[1] = NULL;
-
         if (execve(command, args, NULL) == -1)
             handle_error();
-
-        free(args);
         exit(EXIT_FAILURE);
     }
     else

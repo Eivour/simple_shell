@@ -8,6 +8,7 @@
 int main(void)
 {
     char *command;
+    char **args;
 
     while (1)
     {
@@ -17,12 +18,11 @@ int main(void)
         if (!command)
             break;
 
-        if (strcmp(command, "/bin/ls\n") == 0)
-            execute_command("/bin/ls");
-        else
-            execute_command(command);
+        args = tokenize_input(command);
+        execute_command(args[0], args);
 
         free(command);
+        free(args);
     }
 
     return 0;

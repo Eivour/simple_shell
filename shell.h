@@ -22,12 +22,19 @@
 #define true 1
 #define PATH_MAX_LEN 1024
 
+typedef struct shell_builtin
+{
+    char *name;
+    void (*func)(void);
+} shell_builtin;
 
-void vour_print(const char *format, ...);
-void tokenize_command(char *command, char *args[]);
+/* Function Prototypes */
 void display_prompt(void);
 char *read_user_input(void);
-void execute_command(char *command);
+void execute_command(char *command, char **args);
 void handle_error(void);
+char **tokenize_input(char *input);
+void vour_print(const char *format, ...);
+
 
 #endif
