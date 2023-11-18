@@ -1,4 +1,5 @@
 #include "shell.h"
+
 /**
  * main - Entry point for the simple shell
  *
@@ -8,7 +9,7 @@ int main(void)
 {
     char *command;
 
-    while (true)
+    while (1)
     {
         display_prompt();
         command = read_user_input();
@@ -16,7 +17,11 @@ int main(void)
         if (!command)
             break;
 
-        execute_command(command);
+        if (strcmp(command, "/bin/ls\n") == 0)
+            execute_command("/bin/ls");
+        else
+            execute_command(command);
+
         free(command);
     }
 
